@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Структура будущего сайта ЮМК</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-view="structure">
+    <a class="skip-link" href="#mainContent">Перейти к структуре</a>
+
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-row">
+          <h1>Структура будущего сайта ЮМК</h1>
+          <nav class="links" aria-label="Связанные материалы">
+            <a href="https://docs.google.com/spreadsheets/d/1l9HFbHSBIzYiFe2euZpM1pYH6CtzjeyVXrVF44P_sNY/edit?gid=230071082#gid=230071082" target="_blank" rel="noopener">Google Sheets</a>
+          </nav>
+        </div>
+
+        <nav class="view-tabs" role="tablist" aria-label="Представление структуры">
+          <button id="tabStructure" class="view-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="panelStructure" data-view-tab="structure">Структура</button>
+          <button id="tabMenu" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="panelMenu" data-view-tab="menu" tabindex="-1">Меню сайта</button>
+          <button id="tabMindmap" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="panelMindmap" data-view-tab="mindmap" tabindex="-1">Mind-map</button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="mainContent" class="app-shell">
+      <div class="view-stack">
+        <section id="panelStructure" class="view-panel" role="tabpanel" aria-labelledby="tabStructure" data-view-panel="structure">
+          <section class="workspace" aria-label="Полная структура будущего сайта">
+            <div id="tree" class="tree"></div>
+          </section>
+        </section>
+
+        <section id="panelMenu" class="view-panel" role="tabpanel" aria-labelledby="tabMenu" data-view-panel="menu" hidden>
+          <section class="menu-demo" aria-label="Демонстрация меню будущего сайта">
+            <div class="demo-sitebar">
+              <div class="demo-brand" aria-label="ЮМК ПРОМСНАБ">
+                <span class="demo-brand-mark" aria-hidden="true">ЮМК</span>
+                <span class="demo-brand-name">ПРОМСНАБ</span>
+              </div>
+              <div class="catalog-control">
+                <button id="catalogRoot" class="catalog-page" type="button">Каталог продукции</button>
+                <button id="catalogToggle" class="catalog-toggle" type="button" aria-expanded="true" aria-controls="megaMenu" aria-label="Скрыть меню каталога" title="Скрыть меню каталога">
+                  <span class="catalog-toggle-icon" aria-hidden="true">▾</span>
+                </button>
+              </div>
+            </div>
+            <nav id="megaMenu" class="mega-menu" aria-label="Каталог продукции"></nav>
+          </section>
+        </section>
+
+        <section id="panelMindmap" class="view-panel" role="tabpanel" aria-labelledby="tabMindmap" data-view-panel="mindmap" hidden>
+          <section class="mindmap-shell" aria-label="Классическая mind-map структуры сайта">
+            <div class="mindmap-toolbar" role="toolbar" aria-label="Управление mind-map">
+              <div class="mindmap-controls">
+                <button id="mapZoomOut" class="icon-button" type="button" aria-label="Уменьшить масштаб" title="Уменьшить масштаб"><span aria-hidden="true">−</span></button>
+                <button id="mapZoomIn" class="icon-button" type="button" aria-label="Увеличить масштаб" title="Увеличить масштаб"><span aria-hidden="true">+</span></button>
+                <button id="mapFit" class="icon-button" type="button" aria-label="Показать всю карту" title="Показать всю карту"><span aria-hidden="true">⤢</span></button>
+                <button id="mapReset" class="icon-button" type="button" aria-label="Вернуть начальное раскрытие веток" title="Вернуть начальное раскрытие веток"><span aria-hidden="true">↺</span></button>
+              </div>
+              <div class="mindmap-legend" aria-label="Обозначения">
+                <span><i class="legend-dot legend-dot-group" aria-hidden="true"></i>Группировка</span>
+                <span><i class="legend-dot legend-dot-review" aria-hidden="true"></i>На согласование</span>
+              </div>
+            </div>
+            <div id="mapViewport" class="mindmap-viewport" tabindex="0" aria-label="Интерактивная карта. Перетаскивайте или используйте стрелки для перемещения; плюс и минус изменяют масштаб">
+              <div id="mapStage" class="mindmap-stage">
+                <svg id="mapLines" class="mindmap-lines" aria-hidden="true"></svg>
+                <div id="mapNodes" class="mindmap-nodes"></div>
+              </div>
+            </div>
+            <p id="mapStatus" class="sr-only" aria-live="polite"></p>
+          </section>
+        </section>
+      </div>
+
+      <aside class="panel details details-v13" aria-labelledby="detailTitle">
+        <div class="detail-sheet-head">
+          <span class="eyebrow">Карточка раздела</span>
+          <button id="detailClose" class="detail-close" type="button" aria-label="Закрыть карточку" title="Закрыть">×</button>
+        </div>
+        <h2 id="detailTitle" aria-live="polite">Выберите раздел</h2>
+        <div id="detailBadges" class="detail-badges"></div>
+
+        <nav id="detailPathSection" class="detail-block detail-path-block" aria-label="Путь раздела">
+          <h3>Путь в структуре</h3>
+          <ol id="detailPath" class="detail-path"></ol>
+        </nav>
+
+        <section class="detail-block detail-url-block">
+          <h3>URL</h3>
+          <p id="detailUrl">-</p>
+        </section>
+
+        <section id="detailSeoSection" class="detail-block">
+          <h3>Title / Description</h3>
+          <div id="detailSeo" class="seo-card empty">-</div>
+        </section>
+
+        <section id="detailTagsSection" class="detail-block">
+          <h3>Теги</h3>
+          <div id="detailTags" class="tag-list empty">-</div>
+        </section>
+      </aside>
+    </main>
+
+    <div id="detailsBackdrop" class="details-backdrop" aria-hidden="true"></div>
+
+    <script src="tree-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
