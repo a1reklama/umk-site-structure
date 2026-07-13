@@ -5,6 +5,7 @@ const VIEW_NAMES = ["structure", "menu", "mindmap"];
 const visibleChildren = (node) => (node?.children || []).filter((child) => child.nodeType !== "tag");
 const flat = (nodes = tree) => nodes.flatMap((node) => [node, ...flat(node.children || [])]);
 const allNodes = flat().filter((node) => node.nodeType !== "tag");
+const hasTags = (node) => Boolean((node?.tagGroups || []).length || (node?.tags || []).length);
 const nodeById = new Map(allNodes.map((node) => [node.id, node]));
 const parentById = new Map();
 const depthById = new Map();
@@ -115,7 +116,7 @@ function renderBadges(node) {
   const status = publicStatus(node);
   if (status) badges.push(status);
   if (node.seo?.createsPage === false) badges.push("без SEO-страницы");
-  if ((node.tags || []).length) badges.push("теги");
+  if (hasTags(node)) badges.push("теги");
   els.detailBadges.innerHTML = badges
     .map((badge) => '<span class="badge">' + esc(badge) + "</span>")
     .join("");
@@ -168,8 +169,9 @@ function renderSeo(node) {
 }
 
 function renderTags(node) {
-  const tags = node.tags || [];
-  if (!tags.length) {
+  const groups = node.tagGroups || [];
+  const legacyTags = node.tags || [];
+  if (!groups.length && !legacyTags.length) {
     setBlockVisible(els.detailTagsSection, false);
     els.detailTags.className = "tag-list empty";
     els.detailTags.textContent = "";
@@ -177,21 +179,27 @@ function renderTags(node) {
   }
 
   setBlockVisible(els.detailTagsSection, true);
-  els.detailTags.className = "tag-list";
-  els.detailTags.innerHTML = tags
-    .map((tag) => {
-      const label = tag.status === "Связанный раздел" ? "связанный блок" : "без URL";
-      return (
-        '<span class="tag-chip" title="' +
-        esc(tag.decision || "") +
-        '">' +
-        esc(tag.title) +
-        "<small>" +
-        esc(label) +
-        "</small></span>"
-      );
-    })
-    .join("");
+  els.detailTags.className = "tag-groups";
+  if (groups.length) {
+    els.detailTags.innerHTML = groups
+      .map(
+        (group) =>
+          '<section class="tag-group">' +
+          '<h4>' +
+          esc(group.name) +
+          "</h4>" +
+          '<div class="tag-list">' +
+          (group.values || []).map((value) => '<span class="tag-chip">' + esc(value) + "</span>").join("") +
+          "</div></section>",
+      )
+      .join("");
+    return;
+  }
+
+  els.detailTags.innerHTML =
+    '<section class="tag-group"><h4>Теги</h4><div class="tag-list">' +
+    legacyTags.map((tag) => '<span class="tag-chip">' + esc(tag.title) + "</span>").join("") +
+    "</div></section>";
 }
 
 function showDetails(node) {
@@ -318,7 +326,7 @@ function renderTreeNodes(nodes, depth = 1) {
 
     const sub = nodeSub(node);
     const badge = publicStatus(node);
-    const tagsBadge = (node.tags || []).length ? '<span class="badge badge-tags">теги</span>' : "";
+    const tagsBadge = hasTags(node) ? '<span class="badge badge-tags">теги</span>' : "";
     const subHtml = sub ? '<span class="node-sub">' + esc(sub) + "</span>" : "";
     const metaHtml =
       badge || tagsBadge
@@ -756,7 +764,7 @@ function collectVisibleMapNodes(node, output = []) {
 function mapFlagsHtml(node) {
   const flags = [];
   if (node.status === "На согласование") flags.push("На согласование");
-  if ((node.tags || []).length) flags.push("теги");
+  if (hasTags(node)) flags.push("теги");
   return flags.map((flag) => '<span class="map-flag">' + esc(flag) + "</span>").join("");
 }
 
