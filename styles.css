@@ -1558,6 +1558,52 @@ body.view-changing .details-backdrop {
   }
 }
 
+.detail-hint,
+.requirement-original {
+  color: #526567;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.requirement {
+  border-top: 1px solid #d6dfda;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.requirement summary {
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.requirement-id {
+  color: #97660d;
+  white-space: nowrap;
+}
+
+.requirement-body {
+  padding: 12px 0 3px;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.requirement-body dt {
+  margin-top: 14px;
+  font-weight: 700;
+}
+
+.requirement-body dd {
+  margin: 4px 0 0;
+  white-space: pre-line;
+}
+
+.requirement-source { color: #126578; }
+.preset-block { border-left: 3px solid #bd8930; padding-left: 14px; }
+.preset-block ul { padding-left: 20px; }
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

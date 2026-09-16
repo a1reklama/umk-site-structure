@@ -1,5 +1,6 @@
 const tree = window.UMK_FULL_TREE || [];
 const root = tree[0] || null;
+const requirements = window.UMK_REQUIREMENTS || {};
 const VIEW_NAMES = ["structure", "menu", "mindmap"];
 
 const visibleChildren = (node) => (node?.children || []).filter((child) => child.nodeType !== "tag");
@@ -28,6 +29,7 @@ const state = {
   selectedId: firstTopNode?.id || root?.id || "",
   lastTrigger: null,
   detailsOpen: false,
+  preset: null,
   menuOpen: true,
   activeTopId: firstTopNode?.id || "",
   activeMiddleId: "",
@@ -64,6 +66,10 @@ const els = {
   detailSeo: document.querySelector("#detailSeo"),
   detailTagsSection: document.querySelector("#detailTagsSection"),
   detailTags: document.querySelector("#detailTags"),
+  detailPresetSection: document.querySelector("#detailPresetSection"),
+  detailPreset: document.querySelector("#detailPreset"),
+  detailRequirementsSection: document.querySelector("#detailRequirementsSection"),
+  detailRequirements: document.querySelector("#detailRequirements"),
   detailClose: document.querySelector("#detailClose"),
   detailsBackdrop: document.querySelector("#detailsBackdrop"),
   catalogRoot: document.querySelector("#catalogRoot"),
@@ -127,7 +133,7 @@ function renderPath(node) {
   let current = node;
 
   while (current) {
-    if (current.nodeType !== "menu-group" && (current.url || current.nodeType === "root")) {
+    if (current.nodeType !== "menu-group" && (current.url || current.urlPending || current.nodeType === "root")) {
       chain.unshift(current);
     }
     current = parentById.get(current.id);
@@ -202,14 +208,48 @@ function renderTags(node) {
     "</div></section>";
 }
 
+function renderRequirements(node) {
+  const ids = Array.from(new Set([...(node.requirementIds || []), ...(state.preset?.requirementIds || [])]));
+  const items = ids.map((id) => requirements[id]).filter(Boolean);
+  setBlockVisible(els.detailRequirementsSection, items.length > 0);
+  els.detailRequirements.innerHTML = items.map((item) => [
+    '<details class="requirement" data-requirement-id="' + esc(item.id) + '">',
+    '<summary><span class="requirement-id">' + esc(item.id) + '</span> ' + esc(item.title) + '</summary>',
+    '<div class="requirement-body">',
+    '<a class="requirement-source" href="' + esc(item.sourceUrl) + '" target="_blank" rel="noopener">' + esc(item.sourceLabel) + '</a>',
+    '<p class="requirement-original">Исходник: ' + esc(item.originalSource) + '</p>',
+    '<dl>' + item.fields.map((field) => '<dt>' + esc(field.label) + '</dt><dd>' + esc(field.text) + '</dd>').join('') + '</dl>',
+    '</div></details>',
+  ].join('')).join('');
+}
+
+function renderPreset(node) {
+  const preset = state.preset?.targetId === node.id ? state.preset : null;
+  setBlockVisible(els.detailPresetSection, Boolean(preset));
+  els.detailPreset.replaceChildren();
+  if (!preset) return;
+  const source = document.createElement('p');
+  source.textContent = 'Переход из раздела «' + preset.sourceTitle + '»';
+  els.detailPreset.appendChild(source);
+  const list = document.createElement('ul');
+  for (const filter of preset.filters) {
+    const item = document.createElement('li');
+    item.textContent = filter.name + ': ' + filter.value;
+    list.appendChild(item);
+  }
+  els.detailPreset.appendChild(list);
+}
+
 function showDetails(node) {
   if (!node) return;
   els.detailTitle.textContent = node.title || "Выберите раздел";
   renderBadges(node);
   renderPath(node);
-  els.detailUrl.textContent = node.url || (node.seo?.createsPage === false ? "SEO-страница не создается" : "без URL");
+  els.detailUrl.textContent = node.url || (node.urlPending ? "URL будет определён при разработке сайта" : node.seo?.createsPage === false ? "SEO-страница не создается" : "без URL");
   renderSeo(node);
   renderTags(node);
+  renderPreset(node);
+  renderRequirements(node);
 }
 
 function detailsUseOverlay() {
@@ -256,6 +296,12 @@ function syncSelectionStyles() {
 
 function openDetailsForNode(node, trigger) {
   if (!node) return;
+  state.preset = null;
+  const target = nodeById.get(node.redirect?.targetId);
+  if (target) {
+    state.preset = { ...node.redirect, sourceTitle: node.title, requirementIds: node.requirementIds || [] };
+    node = target;
+  }
   state.selectedId = node.id;
   state.lastTrigger = trigger || document.activeElement;
   showDetails(node);
@@ -497,7 +543,7 @@ function createMenuItem(node, options = {}) {
     return item;
   }
 
-  if (node.url) {
+  if (node.url || node.requirementIds?.length || node.redirect) {
     main.setAttribute("title", "Открыть карточку раздела");
     main.addEventListener("click", () => openDetailsForNode(node, main));
   } else if (hasChildren) {
@@ -553,7 +599,7 @@ function createNestedMenu(nodes) {
     const item = document.createElement("li");
     item.className = "nested-menu-item";
 
-    if (node.url) {
+    if (node.url || node.requirementIds?.length || node.redirect) {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "menu-item-main";
@@ -1125,8 +1171,17 @@ els.detailsBackdrop.addEventListener("click", () => closeDetails());
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Tab" && state.detailsOpen && detailsUseOverlay()) {
-    event.preventDefault();
-    els.detailClose.focus();
+    const focusable = Array.from(els.details.querySelectorAll('button:not([disabled]), a[href], summary, [tabindex="0"]'))
+      .filter((element) => element.getClientRects().length > 0);
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
     return;
   }
 

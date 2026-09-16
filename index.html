@@ -14,7 +14,8 @@
         <div class="topbar-row">
           <h1>Структура будущего сайта ЮМК</h1>
           <nav class="links" aria-label="Связанные материалы">
-            <a href="https://docs.google.com/spreadsheets/d/1l9HFbHSBIzYiFe2euZpM1pYH6CtzjeyVXrVF44P_sNY/edit?gid=230071082#gid=230071082" target="_blank" rel="noopener">Google Sheets</a>
+            <a href="https://docs.google.com/spreadsheets/d/1l9HFbHSBIzYiFe2euZpM1pYH6CtzjeyVXrVF44P_sNY/edit?gid=2002800251#gid=2002800251" target="_blank" rel="noopener">Замечания</a>
+            <a href="https://docs.google.com/spreadsheets/d/1l9HFbHSBIzYiFe2euZpM1pYH6CtzjeyVXrVF44P_sNY/edit?gid=1207056034#gid=1207056034" target="_blank" rel="noopener">Фильтры</a>
           </nav>
         </div>
 
@@ -85,6 +86,12 @@
         <h2 id="detailTitle" aria-live="polite">Выберите раздел</h2>
         <div id="detailBadges" class="detail-badges"></div>
 
+        <section id="detailPresetSection" class="detail-block preset-block" hidden>
+          <h3>Условия перехода</h3>
+          <div id="detailPreset"></div>
+          <p class="detail-hint">В прототипе показан переход и выбранные условия. Товарная выдача появится на сайте.</p>
+        </section>
+
         <nav id="detailPathSection" class="detail-block detail-path-block" aria-label="Путь раздела">
           <h3>Путь в структуре</h3>
           <ol id="detailPath" class="detail-path"></ol>
@@ -104,12 +111,19 @@
           <h3>Теги и характеристики</h3>
           <div id="detailTags" class="tag-list empty">-</div>
         </section>
+
+        <section id="detailRequirementsSection" class="detail-block" hidden>
+          <h3>Требования к разделу</h3>
+          <p class="detail-hint">Фильтры, выбор и правки из ТЗ. Раскройте пункт, чтобы увидеть условия и строку исходника.</p>
+          <div id="detailRequirements"></div>
+        </section>
       </aside>
     </main>
 
     <div id="detailsBackdrop" class="details-backdrop" aria-hidden="true"></div>
 
     <script src="tree-data.js"></script>
+    <script src="requirements-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
