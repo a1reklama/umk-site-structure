@@ -23,17 +23,14 @@ test('requirements are reachable from the real section card and point to the exa
   } finally { await page.close(); }
 });
 
-test('oil and gas entry opens steel gates with oil conditions; direct entry clears the preset', async () => {
+test('a new category without a URL still opens its card with a complete breadcrumb', async () => {
   const page = await browser.newPage();
   page.setDefaultTimeout(4000);
   try {
     await page.goto(url + '#structure');
-    const oil = page.getByRole('button', { name: /^Нефтегазовая запорная арматура/ }).first();
-    await oil.click();
+    await page.locator('.node[data-node-id="tz-gate-steel"]').click();
     assert.equal(await page.locator('#detailTitle').innerText(), 'Задвижки стальные');
-    assert.match(await page.locator('#detailPreset').innerText(), /Нефтяная/);
     assert.match(await page.locator('#detailPath').innerText(), /Задвижки стальные/);
-    await page.locator('.node').filter({ has: page.locator('.node-title', { hasText: /^Задвижки стальные$/ }) }).click();
     assert.equal(await page.locator('#detailPresetSection').isVisible(), false);
   } finally { await page.close(); }
 });

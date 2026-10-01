@@ -32,11 +32,16 @@ test('each requirement is reachable and every attached requirement resolves', ()
   const refs = new Set(nodes.flatMap(n => n.requirementIds || []));
   for (const id of refs) assert.ok(requirements[id], `Unknown requirement ${id}`);
   for (const id of Object.keys(requirements)) assert.ok(refs.has(id), `Unreachable requirement ${id}`);
-  assert.equal(Object.keys(requirements).length, 57);
+  assert.equal(Object.keys(requirements).length, 61);
   for (const item of Object.values(requirements)) {
     const source = new URL(item.sourceUrl);
-    assert.equal(source.hostname, 'docs.google.com');
-    assert.match(source.hash, /range=A\d+$/);
+    assert.equal(source.protocol, 'https:');
+    if (source.hostname === 'docs.google.com') assert.match(source.hash, /range=A\d+$/);
+    else {
+      assert.equal(source.hostname, 'github.com');
+      assert.equal(source.pathname, '/a1reklama/umk-site-structure/blob/main/docs/changes-2026-09-16.md');
+      assert.equal(source.hash, '#corrections-2026-10-01');
+    }
     assert.ok(item.originalSource);
   }
 });
@@ -48,13 +53,4 @@ test('filter and fire directions are directly accessible, dirt separators stay f
   assert.equal(nodes.find(n => n.title === 'Грязевики').children.length, 0);
   assert.equal(nodes.some(n => n.title === 'Геосинтетика'), false);
   assert.ok(nodes.some(n => /Пожарная колонка КПА/.test(n.title)));
-});
-
-test('an oil shortcut resolves to steel gates and includes both preset conditions', () => {
-  const node = nodes.find(n => n.title === 'Нефтегазовая запорная арматура');
-  assert.equal(byId.get(node.redirect.targetId).title, 'Задвижки стальные');
-  assert.deepEqual(JSON.parse(JSON.stringify(node.redirect.filters)), [
-    { name: 'Материал', value: 'Сталь' },
-    { name: 'Рабочая среда', value: 'Нефтяная' },
-  ]);
 });
