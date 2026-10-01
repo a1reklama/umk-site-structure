@@ -5301,8 +5301,8 @@ window.UMK_FULL_TREE = [
         ]
       },
       {
-        "id": "rev-20261001-services",
-        "title": "Услуги",
+        "id": "rev-20261001-3d-fences",
+        "title": "3д Ограждения",
         "priority": "P2",
         "status": "Добавить",
         "url": "",
@@ -5310,50 +5310,22 @@ window.UMK_FULL_TREE = [
         "nodeType": "product",
         "typeLabel": "Раздел — URL не определён",
         "urlPending": true,
-        "children": [
-          {
-            "id": "rev-20261001-3d-fences",
-            "title": "3д Ограждения",
-            "priority": "P2",
-            "status": "Добавить",
-            "url": "",
-            "decision": "Уточнение заказчика от 01.10.2026. Будущий URL и SEO-метаданные не определены.",
-            "nodeType": "product",
-            "typeLabel": "Раздел — URL не определён",
-            "urlPending": true,
-            "children": [],
-            "tags": [],
-            "tagGroups": [],
-            "seo": {
-              "createsPage": null,
-              "title": "",
-              "description": "",
-              "h1": "3д Ограждения"
-            },
-            "requirementIds": [
-              "R-36"
-            ],
-            "semanticRole": "Услуга",
-            "level": 3,
-            "path": "Каталог продукции / Услуги / 3д Ограждения",
-            "section": "Услуги"
-          }
-        ],
+        "children": [],
         "tags": [],
         "tagGroups": [],
         "seo": {
           "createsPage": null,
           "title": "",
           "description": "",
-          "h1": "Услуги"
+          "h1": "3д Ограждения"
         },
         "requirementIds": [
           "R-36"
         ],
-        "semanticRole": "Направление услуг",
+        "semanticRole": "Услуга",
         "level": 2,
-        "path": "Каталог продукции / Услуги",
-        "section": "Услуги"
+        "path": "Каталог продукции / 3д Ограждения",
+        "section": "3д Ограждения"
       }
     ],
     "tags": [],
